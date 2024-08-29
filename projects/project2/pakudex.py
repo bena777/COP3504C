@@ -1,7 +1,6 @@
 from pakuri import Pakuri
-import random
 
-random.randint()
+
 class Pakudex:
     def __init__(self):
         self.pakudex = []
@@ -18,16 +17,32 @@ class Pakudex:
         print("6. Sort Pakuri")
         print("7. Exit")
         print("")
-        action = input("What would you like to do? ")
+        action = int(input("What would you like to do? "))
+        if action == 1:
+            a = self.get_species_list()
+            if not a:
+                print("No Pakuri currently in the Pakudex!")
+            else:
+                print("\nPakuri in Pakudex:")
+                for paku, i in self.a, range(1, len(self.pakudex) + 1):
+                    print(f"{i}. {paku.get_species()}")
+            self.main_menu()
 
     def get_species_list(self) -> list[str]:
         if len(self.pakudex) == 0:
-            print("No Pakuri currently in the Pakudex!")
-            self.main_menu()
             return None
+        return [x.get_species() for x in self.pakudex]
 
-p = Pakudex()
-p.get_species_list()
+    def get_stats(self,species:str):
+        if species not in self.get_species_list():
+            return None
+        for i in self.pakudex:
+            if i.get_species() == species:
+                return [i.]
+
+
+
+
 
 def main():
     return 0
