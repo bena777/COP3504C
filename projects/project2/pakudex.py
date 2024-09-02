@@ -5,12 +5,12 @@ class Pakudex:
     def __init__(self):
         self.pakudex = []
         print("Welcome to Pakudex: Tracker Extraordinaire!")
+        self.going = True
         self.main_menu()
     def main_menu(self):
-        running = True
-        while running:
+        while self.going:
             print("\nPakudex Main Menu")
-            print("---------------------")
+            print("-----------------")
             print("1. List Pakuri")
             print("2. Show Pakuri")
             print("3. Add Pakuri")
@@ -19,55 +19,59 @@ class Pakudex:
             print("6. Sort Pakuri")
             print("7. Exit")
             print("")
-            action = int(input("What would you like to do? "))
-            if action == 1: # list pakuri
-                names = self.get_species_list()
-                if not names:
-                    print("No Pakuri currently in the Pakudex!")
-                else:
-                    print("\nPakuri in Pakudex:")
-                    for paku, i in zip(names, range(1, len(self.pakudex) + 1)):
-                        print(f"{i}. {paku}")
-                self.main_menu()
-            if action == 2: # show pakuri
-                species = input("Enter the name of the species to display: ")
-                if species in self.get_species_list():
-                    print(f"\nSpecies: {species}")
-                    print(f"Level: {str(self.get_stats(species)[0])}")
-                    print(f"CP: {str(self.get_stats(species)[1])}")
-                    print(f"HP: {str(self.get_stats(species)[2])}")
-                else:
-                    print("Error: No such Pakuri!")
-                self.main_menu()
-            if action == 3: # add pakuri
-                species = input("Species: ")
-                if (self.get_species_list()) and (species in self.get_species_list()): # utilizes short-circuiting to check first if the list is not none to prevent error
-                    print("Error: Pakudex already contains this species!")
-                    break
-                global level_input
-                level_input = input("Level: ")
-                again = self.add_pakuri(species,level_input)
-                while not again:
-                    if (self.get_species_list()) and (species in self.get_species_list()):
-                        species = input("Species: ")
+            action = input("What would you like to do? ")
+            try:
+                action = int(action)
+                if (action > 7) or (action < 1):
+                    action = action + " " # throws intentional error
+                if action == 1: # list pakuri
+                    names = self.get_species_list()
+                    if not names:
+                        print("No Pakuri currently in the Pakudex!")
                     else:
-                        level_input = input("Level: ")
+                        print("\nPakuri in Pakudex:")
+                        for paku, i in zip(names, range(1, len(self.pakudex) + 1)):
+                            print(f"{i}. {paku}")
+                elif action == 2: # show pakuri
+                    species = input("Enter the name of the species to display: ")
+                    if (self.get_species_list()) and (species in self.get_species_list()):
+                        print(f"\nSpecies: {species}")
+                        print(f"Level: {str(self.get_stats(species)[0])}")
+                        print(f"CP: {str(self.get_stats(species)[1])}")
+                        print(f"HP: {str(self.get_stats(species)[2])}")
+                    else:
+                        print("Error: No such Pakuri!")
+                elif action == 3: # add pakuri
+                    species = input("Species: ")
+                    if (self.get_species_list()) and (species in self.get_species_list()): # utilizes short-circuiting to check first if the list is not none to prevent error
+                        print("Error: Pakudex already contains this species!")
+                        continue
+                    global level_input
+                    level_input = input("Level: ")
                     again = self.add_pakuri(species,level_input)
-                print(f"Pakuri species {species} (level {str(level_input)}) added!")
-            if action == 4: # remove pakuri
-                remove = input("Enter the name of the Pakuri to remove: ")
-                removed = self.remove_pakuri(remove)
-                if removed:
-                    self.pakudex.remove(0) # how can i actually impliment remove function
-            if action == 5: # evolve pakuri
-                evolve = input("Enter the name of the Pakuri to evolve: ")
-                evolved = self.evolve_species(evolve)
-                if evolved:
-                    self.pakudex
-
-            if action == 7: # exit program
-                running = False
-
+                    while not again:
+                        if (self.get_species_list()) and (species in self.get_species_list()):
+                            species = input("Species: ")
+                        else:
+                            level_input = input("Level: ")
+                        again = self.add_pakuri(species,level_input)
+                    print(f"Pakuri species {species} (level {str(level_input)}) added!")
+                elif action == 4: # remove pakuri
+                    remove = input("Enter the name of the Pakuri to remove: ")
+                    self.remove_pakuri(remove)
+                elif action == 5: # evolve pakuri
+                    evolve = input("Enter the name of the species to evolve: ")
+                    self.evolve_species(evolve)
+                elif action == 6: # sort pakuri
+                    if self.get_species_list():
+                        self.pakudex = sorted(self.pakudex,key=lambda p:p.get_species()) # help from https://stackoverflow.com/questions/403421/how-do-i-sort-a-list-of-objects-based-on-an-attribute-of-the-objects
+                    print("Pakuri have been sorted!")
+                elif action == 7: # exit program
+                    print("Thanks for using Pakudex! Bye!")
+                    self.going = False
+                    break
+            except:
+                print("Unrecognized menu selection!")
 
 
     def get_species_list(self) -> list[str]:
@@ -101,11 +105,11 @@ class Pakudex:
 
     def evolve_species(self,species):
         if (self.get_species_list()) and (species in self.get_species_list()):
-            print(f"Pakuri {species} evolved.")
+            print(f"{species} has evolved!")
             for pakuri in self.pakudex:
                 if pakuri.get_species() == species:
                     pakuri.set_attack(pakuri.get_attack()+1)
-                    # impliment for level
+                    pakuri.level = pakuri.level*2
             return True
         else:
             print("Error: No such Pakuri!")
@@ -117,19 +121,12 @@ class Pakudex:
             return None
         for i in self.pakudex:
             if i.get_species() == species:
-                return [1] # returns in order [level,cp,hp]
-
-
-
+                return [i.level,i.combat_power,i.healthy_points] # returns in order [level,cp,hp]
 
 
 def main():
     p = Pakudex()
     p.main_menu()
-
-
-
-
 
 
 if __name__ == "__main__":
