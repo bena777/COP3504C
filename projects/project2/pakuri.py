@@ -1,3 +1,4 @@
+import math
 
 
 class Pakuri:
@@ -23,7 +24,19 @@ class Pakuri:
     def set_attack(self, new_attack: int):
         self.__attack = new_attack
 
+    @property
+    def level(self):
+        return self.__level
 
+    @level.setter
+    def level(self,new_level):
+        self.__level = new_level
 
+    @property
+    def combat_power(self):
+        return math.floor(self.get_attack()*math.sqrt(self.get_defense())*math.sqrt(self.get_stamina())*self.level*0.08)
 
+    @property
+    def healthy_points(self):
+        return math.floor(self.get_stamina() * (self.level/6))
 
