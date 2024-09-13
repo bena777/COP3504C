@@ -81,9 +81,8 @@ def string_to_rle(rleString: str) -> bytes:
 
 print(string_to_rle("10f:64"))
 def main():
-    global file, going
+    global going, image_data
     going = True
-    file = "image_files/gator.gfx"
     print("Welcome to the RLE image encoder!")
     print("\nDisplaying Spectrum Image:")
     display_image(TEST_RAINBOW)
@@ -105,14 +104,21 @@ def main():
             file = input("Enter name of file to load: ")
         elif option == 2:
             print("Test image data loaded.")
-            file = load_file(file).hex()
-            file = encode_rle(string_to_data(file))
+            file = load_file("image_files/gator.gfx")
+            encode = encode_rle(file)
+            image_data = decode_rle(encode)
         elif option == 3:
             decode = input("Enter an RLE string to be decoded: ")
+            image_data = decode_rle(decode)
         elif option == 4:
-            decode = input("enter the hex string holding RLE data: ")
+            decode = input("Enter the hex string holding RLE data: ")
+            image_data =
+        elif option == 5:
+            decode = input("Enter the hex string holding flat data: ")
+            print("Number of runs: "+str(count_runs(decode)))
         elif option == 6:
-            display_image(file)
+            print(image_data)
+            display_image(image_data)
 
 if __name__ == "__main__":
     main()
