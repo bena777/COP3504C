@@ -4,7 +4,7 @@ import math
 class Pakuri:
     def __init__(self,species:str,level:int):
         self.__species = species
-        self.__level = level
+        self._level = level
         self.__attack = (len(species) * 7 + 11) % 16
         self.__defense = (len(species) * 5 + 17) % 16
         self.__stamina = (len(species) * 6 + 13) % 16
@@ -26,17 +26,17 @@ class Pakuri:
 
     @property
     def level(self):
-        return self.__level
+        return self._level
 
     @level.setter
     def level(self,new_level):
-        self.__level = new_level
+        self._level = new_level
 
     @property
-    def combat_power(self):
+    def cp(self):
         return math.floor(self.get_attack()*math.sqrt(self.get_defense())*math.sqrt(self.get_stamina())*self.level*0.08)
 
     @property
-    def healthy_points(self):
+    def hp(self):
         return math.floor(self.get_stamina() * (self.level/6))
 
