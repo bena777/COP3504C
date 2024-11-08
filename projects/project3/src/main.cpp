@@ -117,18 +117,33 @@ int main() {
     writePixels(outputFile,result,headerObject.width,headerObject.height);
     outputFile.close();
 
-    //Test 3
-    file = std::ifstream("../input/layer1.tga");
-    file2 = std::ifstream("../input/pattern2.tga");
+    //Test 3 (complete)
+    file = std::ifstream("../input/layer1.tga",std::ios::binary);
+    file2 = std::ifstream("../input/pattern2.tga",std::ios::binary);
     headerObject = readHeader(file);
     pixels = loadPixels(file,headerObject);
     pixels2 = loadPixels(file2,headerObject);
-    Pixel* temp_result = Multiply(pixels,pixels2,headerObject.width,headerObject.height);
-    file = std::ifstream("../input/text.tga");
+    Pixel* temp_result = Multiply(pixels2,pixels,headerObject.width,headerObject.height);
+    file = std::ifstream("../input/text.tga",std::ios::binary);
     headerObject = readHeader(file);
     pixels = loadPixels(file,headerObject);
     result = Screen(pixels,temp_result,headerObject.width,headerObject.height);
     outputFile = std::ofstream("../output/part3.tga",std::ios::binary);
+    writeHeader(outputFile,headerObject);
+    writePixels(outputFile,result,headerObject.width,headerObject.height);
+    outputFile.close();
+
+    //Test 4 (complete)
+    file = std::ifstream("../input/layer2.tga",std::ios::binary);
+    file2 = std::ifstream("../input/circles.tga",std::ios::binary);
+    headerObject = readHeader(file);
+    pixels = loadPixels(file,headerObject);
+    pixels2 = loadPixels(file2,headerObject);
+    temp_result = Multiply(pixels2,pixels,headerObject.width,headerObject.height);
+    file = std::ifstream("../input/pattern2.tga",std::ios::binary);
+    pixels = loadPixels(file,headerObject);
+    result = Subtract(temp_result,pixels,headerObject.width,headerObject.height);
+    outputFile = std::ofstream("../output/part4.tga",std::ios::binary);
     writeHeader(outputFile,headerObject);
     writePixels(outputFile,result,headerObject.width,headerObject.height);
     outputFile.close();
@@ -146,6 +161,21 @@ int main() {
     writeHeader(outputFile,headerObject);
     writePixels(outputFile,result,headerObject.width,headerObject.height);
     outputFile.close();
+
+    //Test 7 (complete)
+    file = std::ifstream("../input/car.tga",std::ios::binary);
+    headerObject = readHeader(file);
+    result = loadPixels(file,headerObject);
+    for(int i=0; i < headerObject.height * headerObject.width; i++){
+        int current = result[i].red;
+        result[i].blue = (unsigned char)0;
+        result[i].red = (unsigned char)std::min(255,(int)(current * 4));
+    }
+    outputFile = std::ofstream("../output/part7.tga",std::ios::binary);
+    writeHeader(outputFile,headerObject);
+    writePixels(outputFile,result,headerObject.width,headerObject.height);
+    outputFile.close();
+
 
     //Test 9
     file = std::ifstream("../input/layer_red.tga", std::ios::binary);
