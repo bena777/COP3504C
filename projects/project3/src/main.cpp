@@ -1,5 +1,4 @@
 #include <iostream>
-#include <fstream>
 #include <vector>
 #include "main.h"
 
@@ -95,24 +94,24 @@ Pixel* Overlay(Pixel first[], Pixel second[], int w, int h){
     Pixel* pixels = new Pixel[w*h];
     for(int i=0; i<w*h; i++){
         if(second[i].blue/255.0 <= 0.5){
-            pixels[i].blue = (unsigned char)(2*((second[i].blue*first[i].blue)/255.0));
+            pixels[i].blue = (unsigned char)((2*((second[i].blue*first[i].blue)/255.0))+0.5);
         } else{
-            pixels[i].blue = (unsigned char)(255*(1-2*(1-(second[i].blue/255.0))*(1-(first[i].blue/255.0))));
+            pixels[i].blue = (unsigned char)((255*(1-2*(1-(second[i].blue/255.0))*(1-(first[i].blue/255.0))))+0.5);
         }
         if(second[i].green/255.0 <= 0.5){
-            pixels[i].green = (unsigned char)((2*((second[i].green*first[i].green)/255.0)));
+            pixels[i].green = (unsigned char)(((2*((second[i].green*first[i].green)/255.0)))+0.5);
         } else{
-            pixels[i].green = (unsigned char)(255*(1-2*(1-(second[i].green/255.0))*(1-(first[i].green/255.0))));
+            pixels[i].green = (unsigned char)((255*(1-2*(1-(second[i].green/255.0))*(1-(first[i].green/255.0))))+0.5);
         }
         if(second[i].red/255.0 <= 0.5){
-            pixels[i].red = (unsigned char)(2*((second[i].red*first[i].red)/255.0));
+            pixels[i].red = (unsigned char)(((2*((second[i].red*first[i].red)/255.0)))+0.5);
         } else{
-            pixels[i].red = (unsigned char)(255*(1-2*(1-(second[i].red/255.0))*(1-(first[i].red/255.0))));
+            pixels[i].red = (unsigned char)((255*(1-2*(1-(second[i].red/255.0))*(1-(first[i].red/255.0))))+0.5);
         }
     }
     return pixels;
 }
-bool test_task(Pixel actual[], Pixel example[], int w, int h){
+bool test_task(Pixel actual[], Pixel example[], int w, int h){ //legacy function from testing
     for(int i=0; i<w * h; i++){
         if((actual[i].red != example[i].red) || (actual[i].green != example[i].green) || (actual[i].blue != example[i].blue)){
             cout << i << endl;
@@ -350,7 +349,10 @@ int main() {
     writeHeader(outputFile,headerObject);
     writePixels(outputFile,blue_channel,headerObject.width,headerObject.height);
     outputFile.close();
-
+    delete[] blue_channel;
+    delete[] red_channel;
+    delete[] green_channel;
+    cout << "Test 8 passes!" << endl;
 
 
 
@@ -388,6 +390,36 @@ int main() {
         cout << "Test 9 fails." << endl;
     }
 
+    //Test 10
+    file = ifstream("../input/text2.tga",std::ios::binary);
+    headerObject = readHeader(file);
+    pixels = loadPixels(file,headerObject);
+    Pixel* new_pixels = new Pixel[headerObject.height * headerObject.width];
+    for (int h = 0; h < headerObject.height; h++) {
+        for (int w = 0; w < headerObject.width; w++) {
+            new_pixels[(headerObject.height-1-h)*headerObject.width+(headerObject.width-1-w)].red = pixels[h*headerObject.width+w].red;
+            new_pixels[(headerObject.height-1-h)*headerObject.width+(headerObject.width-1-w)].green = pixels[h*headerObject.width+w].green;
+            new_pixels[(headerObject.height-1-h)*headerObject.width+(headerObject.width-1-w)].blue = pixels[h*headerObject.width+w].blue;
+        }
+    }
+    outputFile = std::ofstream("../output/part10.tga",std::ios::binary);
+    writeHeader(outputFile,headerObject);
+    writePixels(outputFile,new_pixels,headerObject.width,headerObject.height);
+    outputFile.close();
+
+    file = ifstream("../output/part10.tga", std::ios::binary);
+    file2 = ifstream("../examples/EXAMPLE_part10.tga", std::ios::binary);
+    headerObject = readHeader(file);
+    headerObject2 = readHeader(file2);
+    pixels = loadPixels(file,headerObject);
+    pixels2 = loadPixels(file2,headerObject);
+    test = test_task(pixels,pixels2,headerObject.height,headerObject.width);
+    if(test){
+        cout << "Test 10 passes!" << endl;
+    } else{
+        cout << "Test 10 fails." << endl;
+    }
+
     //Extra Credit
     file = std::ifstream("../input/car.tga", std::ios::binary);
     file2 = std::ifstream("../input/circles.tga", std::ios::binary);
@@ -406,26 +438,26 @@ int main() {
     int running = 0;
     for(int i=0; i < headerObject.height * headerObject.width; i++){
         true_result[i].red = (unsigned char)result[i].red;
-        true_result[i].green = (unsigned char)result2[i].green;
-        true_result[i].blue = (unsigned char)result3[i].blue;
+        true_result[i].green = (unsigned char)result[i].green;
+        true_result[i].blue = (unsigned char)result[i].blue;
     }
     running+=headerObject.height*headerObject.width;
     for(int i=running; i < headerObject2.height * headerObject2.width; i++){
-        true_result[i].red = (unsigned char)result[i].red;
+        true_result[i].red = (unsigned char)result2[i].red;
         true_result[i].green = (unsigned char)result2[i].green;
-        true_result[i].blue = (unsigned char)result3[i].blue;
+        true_result[i].blue = (unsigned char)result2[i].blue;
     }
     running+=headerObject2.height*headerObject2.width;
     for(int i=running; i < headerObject3.height * headerObject3.width; i++){
-        true_result[i].red = (unsigned char)result[i].red;
-        true_result[i].green = (unsigned char)result2[i].green;
+        true_result[i].red = (unsigned char)result3[i].red;
+        true_result[i].green = (unsigned char)result3[i].green;
         true_result[i].blue = (unsigned char)result3[i].blue;
     }
     running+=headerObject3.height*headerObject3.width;
     for(int i=running; i < headerObject4.height * headerObject.width; i++){
-        true_result[i].red = (unsigned char)result[i].red;
-        true_result[i].green = (unsigned char)result2[i].green;
-        true_result[i].blue = (unsigned char)result3[i].blue;
+        true_result[i].red = (unsigned char)result4[i].red;
+        true_result[i].green = (unsigned char)result4[i].green;
+        true_result[i].blue = (unsigned char)result4[i].blue;
     }
     outputFile = std::ofstream("../output/extracredit.tga");
     writeHeader(outputFile,headerObject);
