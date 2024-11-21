@@ -1,0 +1,4 @@
+C:/Users/benad/CLionProjects/lab10/CMakeFiles/memer.dir
+C:/Users/benad/CLionProjects/lab10/CMakeFiles/memeify.dir
+C:/Users/benad/CLionProjects/lab10/CMakeFiles/edit_cache.dir
+C:/Users/benad/CLionProjects/lab10/CMakeFiles/rebuild_cache.dir

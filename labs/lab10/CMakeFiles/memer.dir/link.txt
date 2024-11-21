@@ -1,0 +1,2 @@
+C:\msys64\mingw64\bin\ar.exe qc libmemer.a CMakeFiles/memer.dir/memer.cpp.obj
+C:\msys64\mingw64\bin\ranlib.exe libmemer.a
